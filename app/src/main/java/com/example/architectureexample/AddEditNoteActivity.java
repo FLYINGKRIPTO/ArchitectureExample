@@ -10,7 +10,11 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-public class AddActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
+    public static final String EXTRA_ID =
+            "com.example.architectureexample.EXTRA_ID";
+
+
     public static final String EXTRA_TITLE =
             "com.example.architectureexample.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION =
@@ -34,7 +38,18 @@ public class AddActivity extends AppCompatActivity {
         numberPickerPriority.setMaxValue(5);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
-        setTitle("Add Note");
+
+        Intent intent = getIntent();
+        if(intent.hasExtra(EXTRA_ID)){
+            setTitle("Edit Note");
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY,1));
+        }
+        else{
+            setTitle("Add Note");
+
+        }
 
     }
 
@@ -44,7 +59,7 @@ public class AddActivity extends AppCompatActivity {
         int priority = numberPickerPriority.getValue();
 
         if(title.trim().isEmpty() || description.trim().isEmpty()){
-            Toast.makeText(AddActivity.this,"Please insert title and descriptioni",Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddEditNoteActivity.this,"Please insert title and descriptioni",Toast.LENGTH_SHORT).show();
             return;
 
             //we have called return because if code comes under this if statement
@@ -65,6 +80,11 @@ public class AddActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TITLE,title);
         data.putExtra(EXTRA_DESCRIPTION,description);
         data.putExtra(EXTRA_PRIORITY,priority);
+
+        int id  = getIntent().getIntExtra(EXTRA_ID,-1);
+        if(id != -1){
+            data.putExtra(EXTRA_ID,id);
+        }
         setResult(RESULT_OK ,data);
         finish();
 
