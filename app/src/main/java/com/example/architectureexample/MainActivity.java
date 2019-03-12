@@ -2,11 +2,14 @@ package com.example.architectureexample;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.List;
@@ -16,10 +19,22 @@ public class MainActivity extends AppCompatActivity {
     //we create a member variable of our view model
 
     private NoteViewModel noteViewModel;
+    public static final int ADD_NOTE_REQUEST = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FloatingActionButton buttonAddNote = findViewById(R.id.add_note_fab);
+
+        buttonAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,AddActivity.class);
+                startActivityForResult(intent,ADD_NOTE_REQUEST);
+
+            }
+        });
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,5 +70,27 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"onChanged",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK){
+
+            String title = data.getStringExtra(AddActivity.EXTRA_TITLE);
+            String description = data.getStringExtra(AddActivity.EXTRA_DESCRIPTION);
+            int priority = data.getIntExtra(AddActivity.EXTRA_PRIORITY,1);
+
+            Note note = new Note(title,description,priority);
+            noteViewModel.insert(note);
+
+            Toast.makeText(MainActivity.this,"Note Saved",Toast.LENGTH_SHORT).show();
+
+        }
+        else{
+            Toast.makeText(MainActivity.this,"Note not saved",Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
