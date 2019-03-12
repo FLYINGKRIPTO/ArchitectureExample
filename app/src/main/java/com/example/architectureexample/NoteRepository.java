@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+//IT is not a part of android architecture components
+//Considered as a best practice as it provides an abstraction layer over
+//different data sources
 public class NoteRepository {
     private NoteDao noteDao;
     private LiveData<List<Note>> allNotes;
