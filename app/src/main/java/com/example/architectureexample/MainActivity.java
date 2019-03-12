@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -18,6 +20,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        final NoteAdapter adapter = new NoteAdapter();
+        recyclerView.setAdapter(adapter);
+
 
         //we assign the noteViewModel member variable
         //but we don't call a new noteViewModel
@@ -41,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 //and when the activity is destroyed
                 //this will not hold any refrence to this activity any more
 
+                adapter.setNotes(notes);
                 Toast.makeText(MainActivity.this,"onChanged",Toast.LENGTH_SHORT).show();
             }
         });
